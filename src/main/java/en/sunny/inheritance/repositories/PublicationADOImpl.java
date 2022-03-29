@@ -1,7 +1,7 @@
 package en.sunny.inheritance.repositories;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -13,14 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import en.sunny.inheritance.entities.Publication;
 
 @Transactional(readOnly = true)
-public class PublicationADOImpl {
+public class PublicationADOImpl implements PublicationADOCustom {
 	
 	@PersistenceContext
 	EntityManager entityManager;
-	
 
 	@SuppressWarnings("unchecked")
-	List<Publication> betweenDates(Date from, Date to) {
+	public List<Publication> betweenDates(Instant from, Instant to) {
 		List<Publication> publications = new ArrayList<Publication>();
 		String SQL = "SELECT * FROM PUBLICATIONS WHERE PUB_DATE BETWEEN ?1 AND ?2";
 		Query query = entityManager.createQuery(SQL);

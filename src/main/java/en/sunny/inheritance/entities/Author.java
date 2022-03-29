@@ -1,5 +1,6 @@
 package en.sunny.inheritance.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -71,4 +72,17 @@ public class Author {
 		this.getPublications().remove(publication);
 		publication.getAuthors().remove(this);
 	}
+	public Author(Long id, int version, String firstName, String lastName) {
+		this();
+		this.id = id;
+		this.version = version;
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
+	
+	public Author() {
+		this.publications = new HashSet<Publication>();
+	}
+	
+	
 }

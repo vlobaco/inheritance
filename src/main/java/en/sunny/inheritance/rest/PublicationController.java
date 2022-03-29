@@ -1,6 +1,6 @@
 package en.sunny.inheritance.rest;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
@@ -26,10 +26,10 @@ public class PublicationController {
 	@GetMapping("/publications/search/betweenDates")
 	@ResponseBody
 	public CollectionModel<PersistentEntityResource> betweenDates (
-				@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date from,
-				@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd")Date to,
+				@RequestParam("from") @DateTimeFormat(pattern="yyyy-MM-dd") Instant from,
+				@RequestParam("to") @DateTimeFormat(pattern="yyyy-MM-dd") Instant to,
 				PersistentEntityResourceAssembler assembler) { 
-		List<Publication> partidos = publicationADO.betweenDates(from, to); 
-		return assembler.toCollectionModel(partidos); 
+		List<Publication> publications = publicationADO.betweenDates(from, to); 
+		return assembler.toCollectionModel(publications); 
 	}
 }

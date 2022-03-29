@@ -43,39 +43,50 @@ public class ConfiguracionConJava {
 		Map<Class<?>, Class<?>> controllersRegistrados = new HashMap<>();
 
 		controllersRegistrados.put(Publication.class, PublicationController.class);
-		
+
+
 		return new RepresentationModelProcessor<RepositorySearchesResource>() {
+
 			@Override
 			public RepositorySearchesResource process(RepositorySearchesResource searchResource) {
 				if (controllersRegistrados.containsKey(searchResource.getDomainType())) {
-					Method[] metodos = 
-						controllersRegistrados.get(searchResource.getDomainType()).getDeclaredMethods();
+					Method[] metodos = controllersRegistrados.get(searchResource.getDomainType()).getDeclaredMethods();
 					for (Method m : metodos) {
-						if (!m.isAnnotationPresent(ResponseBody.class)) continue;
+						if (!m.isAnnotationPresent(ResponseBody.class))
+							continue;
 						try {
 							Object[] pathVars = Stream.of(m.getParameters())
-								.filter(p -> p.isAnnotationPresent(PathVariable.class))
-								.map(p -> "(" + p.getName() + ")")
-								.collect(Collectors.toList()).toArray();
-							URI uri = linkTo(m, pathVars).toUri();
-							String path = new URI(
-								uri.getScheme(), 
-								uri.getUserInfo(), 
-								uri.getHost(), 
-								uri.getPort(),
-								config.getBasePath() + uri.getPath(), 
-								uri.getQuery(), 
-								uri.getFragment()
-								).toString().replace("(", "{").replace(")", "}");
+									.filter(p -> p.isAnnotationPresent(PathVariable.class))
+									.map(p -> "(" + p.getName() + ")").collect(Collectors.toList()).toArray();
+							URI uri;
+							if (pathVars.length==0) {
+								uri = linkTo(m).toUri();
+							} else {
+								uri = linkTo(m, pathVars).toUri();	
+							}
+							System.out.println("base path: " + config.getBasePath());
+							System.out.println("URI path: " + uri.getPath());
+							System.out.println("URI query: " + uri.getQuery());
+							System.out.println("URI fragment: " + uri.getFragment());
+							String path = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(),
+//									config.getBasePath() + uri.getPath(), uri.getQuery(), uri.getFragment()).toString()
+									config.getBasePath() + uri.getPath(), null, null).toString()
+//											.replace("(", "{").replace(")", "}");
+											;
 							String requestParams = Stream.of(m.getParameters())
-								.filter(p -> p.isAnnotationPresent(RequestParam.class))
-								.map(Parameter::getName)
-								.collect(Collectors.joining(","));
+									.filter(p -> p.isAnnotationPresent(RequestParam.class)).map(Parameter::getName)
+									.collect(Collectors.joining(","));
 							searchResource.add(Link.of(path + "{?" + requestParams + "}", m.getName()));
-						} catch (URISyntaxException e) { e.printStackTrace(); }
+						} catch (URISyntaxException e) {
+							e.printStackTrace();
+						}
 					}
 				}
+
 				return searchResource;
-			}};
-		}
+			}
+
+		};
+
+	}
 }
