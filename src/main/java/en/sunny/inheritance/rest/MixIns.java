@@ -1,4 +1,4 @@
-package en.sunny.inheritance.json;
+package en.sunny.inheritance.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,6 +13,6 @@ public class MixIns {
 		
 	}
 	
-	@JsonIgnoreProperties({"version", "publishingDate"})
+	@JsonIgnoreProperties({"version"})
 	public abstract static class MixInPublication {}
 }

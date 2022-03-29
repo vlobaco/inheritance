@@ -8,6 +8,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import en.sunny.inheritance.entities.Publication;
 
 @RepositoryRestResource(path="publications", collectionResourceRel="publications")
-public interface PublicationADO extends JpaRepository<Publication, Long> {
+public interface PublicationADO extends JpaRepository<Publication, Long>, PublicationADOCustom {
 	List<Publication> findByTitle(String name);
 }
