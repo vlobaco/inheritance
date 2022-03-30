@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+//import org.springframework.context.annotation.ComponentScan;
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.RepositorySearchesResource;
 import org.springframework.hateoas.Link;
@@ -29,6 +29,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import en.sunny.inheritance.REST.BookController;
+import en.sunny.inheritance.entidades.Book;
 
 public class ConfiguracionConJava {
 	@Bean
@@ -45,7 +48,7 @@ public class ConfiguracionConJava {
 	RepresentationModelProcessor<RepositorySearchesResource> addSearchLinks(RepositoryRestConfiguration config) {
 		Map<Class<?>, Class<?>> controllersRegistrados = new HashMap<>();
 
-//		controllersRegistrados.put(Cliente.class, ClienteController.class);
+		controllersRegistrados.put(Book.class, BookController.class);
 
 
 		return new RepresentationModelProcessor<RepositorySearchesResource>() {
@@ -60,9 +63,9 @@ public class ConfiguracionConJava {
 							Object[] pathVars = Stream.of(m.getParameters())
 									.filter(p -> p.isAnnotationPresent(PathVariable.class))
 									.map(p -> "(" + p.getName() + ")").collect(Collectors.toList()).toArray();
-							URI uri = linkTo(m, pathVars).toUri();
+							URI uri = linkTo(m).toUri();
 							String path = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(),
-									config.getBasePath() + uri.getPath(), uri.getQuery(), uri.getFragment()).toString()
+									config.getBasePath() + uri.getPath(), null, null).toString()
 											.replace("(", "{").replace(")", "}");
 							String requestParams = Stream.of(m.getParameters())
 									.filter(p -> p.isAnnotationPresent(RequestParam.class)).map(Parameter::getName)
